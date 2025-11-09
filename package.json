@@ -1,0 +1,7 @@
+{
+  "name": "home-manager",
+  "devDependencies": {
+    "@biomejs/biome": "2.3.4",
+    "typescript": "5.9.3"
+  }
+}

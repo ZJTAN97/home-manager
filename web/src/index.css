@@ -1,0 +1,16 @@
+a {
+  text-decoration: none;
+  color: var(--mantine-color-gray-6);
+  cursor: pointer;
+}
+
+html,
+body {
+  margin: 0;
+  overscroll-behavior: none; /* Prevents bounce/elastic scroll on iOS 15+ */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
