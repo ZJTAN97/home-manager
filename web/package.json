@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.3.14",
+    "@electric-sql/pglite-react": "^0.2.32",
     "@mantine/core": "8.3.6",
     "@mantine/hooks": "8.3.6",
     "@tabler/icons-react": "^3.35.0",

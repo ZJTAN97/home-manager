@@ -1,8 +1,9 @@
-import { AppShell, Avatar, Burger, Group, NavLink } from "@mantine/core";
+import { AppShell, Avatar, Burger, Group, NavLink, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import classes from "./LayoutShell.module.css";
+import { ColorSchemeButton } from "../ColorSchemeButton/ColorSchemeButton";
 
 export const LayoutShell = ({ children }: { children: ReactNode }) => {
   const [opened, { toggle }] = useDisclosure();
@@ -17,8 +18,11 @@ export const LayoutShell = ({ children }: { children: ReactNode }) => {
     >
       <AppShell.Header className={classes.header}>
         <Group h="100%" p="md">
+          <ColorSchemeButton />
           <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
-          Home Manager
+          <Text fw={500} c="blue.8">
+            Home Manager
+          </Text>
         </Group>
       </AppShell.Header>
       <AppShell.Navbar className={classes.navbar}>
