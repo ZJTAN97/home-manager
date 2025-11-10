@@ -1,12 +1,12 @@
+import type { PGliteWithLive } from "@electric-sql/pglite/live";
+import { PGliteProvider } from "@electric-sql/pglite-react";
+import { Loader, Stack } from "@mantine/core";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { LayoutShell } from "./-components/LayoutShell/LayoutShell";
-import type { PGliteWithLive } from "@electric-sql/pglite/live";
 import { useEffect, useState } from "react";
-import { PGliteProvider } from "@electric-sql/pglite-react";
-import { Loader, Stack } from "@mantine/core";
+import { LayoutShell } from "./-components/LayoutShell/LayoutShell";
 import setupPgLite from "./-db/pglite";
 
 export const Route = createRootRouteWithContext<{

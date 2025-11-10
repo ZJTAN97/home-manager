@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-manager
+  namespace: wandernotes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: home-manager
+  template:
+    metadata:
+      labels:
+        app: home-manager
+    spec:
+      containers:
+        - name: home-manager
+          image: wandernotes/home-manager:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

@@ -1,8 +1,7 @@
 import {
-  useMantineColorScheme,
-  useComputedColorScheme,
-  Button,
   ActionIcon,
+  useComputedColorScheme,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { IconSunElectricity } from "@tabler/icons-react";
 

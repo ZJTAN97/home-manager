@@ -1,9 +1,18 @@
-import { AppShell, Avatar, Burger, Group, NavLink, Text } from "@mantine/core";
+import {
+  AppShell,
+  Avatar,
+  Burger,
+  Flex,
+  Group,
+  NavLink,
+  Text,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { IconLayoutDashboard, IconTimeDuration0 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import classes from "./LayoutShell.module.css";
 import { ColorSchemeButton } from "../ColorSchemeButton/ColorSchemeButton";
+import classes from "./LayoutShell.module.css";
 
 export const LayoutShell = ({ children }: { children: ReactNode }) => {
   const [opened, { toggle }] = useDisclosure();
@@ -13,16 +22,28 @@ export const LayoutShell = ({ children }: { children: ReactNode }) => {
       header={{
         height: 60,
       }}
-      navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
+      navbar={{ width: 200, breakpoint: "sm", collapsed: { mobile: !opened } }}
       padding="md"
     >
       <AppShell.Header className={classes.header}>
-        <Group h="100%" p="md">
+        <Group h="100%" p="md" justify="space-between">
+          <Flex gap="xs">
+            {" "}
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              size="sm"
+              hiddenFrom="sm"
+            />
+            <Text
+              fw={500}
+              c="blue.8"
+              renderRoot={(props) => <Link to="/" {...props} />}
+            >
+              Home Manager
+            </Text>
+          </Flex>
           <ColorSchemeButton />
-          <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
-          <Text fw={500} c="blue.8">
-            Home Manager
-          </Text>
         </Group>
       </AppShell.Header>
       <AppShell.Navbar className={classes.navbar}>
@@ -30,15 +51,29 @@ export const LayoutShell = ({ children }: { children: ReactNode }) => {
         <div className={classes.links}>
           <Link to="/">
             {({ isActive }) => (
-              <NavLink component="div" active={isActive} label="Overview" />
+              <NavLink
+                leftSection={<IconLayoutDashboard size={18} />}
+                component="div"
+                active={isActive}
+                label={
+                  <Text pt={1} fw={500} size="xs">
+                    Overview
+                  </Text>
+                }
+              />
             )}
           </Link>
           <Link to="/expiry">
             {({ isActive }) => (
               <NavLink
+                leftSection={<IconTimeDuration0 size={18} />}
                 component="div"
                 active={isActive}
-                label="Expiry Checker"
+                label={
+                  <Text pt={1} fw={500} size="xs">
+                    Expiry Checker
+                  </Text>
+                }
               />
             )}
           </Link>
