@@ -1,3 +1,4 @@
+import { useLiveQuery, usePGlite } from "@electric-sql/pglite-react";
 import {
   Badge,
   Button,
@@ -40,6 +41,17 @@ const items = [
 ];
 
 export const ExpiryPage = () => {
+
+  const expiryItems = useLiveQuery(
+    `
+    SELECT * 
+    FROM expiry
+    `,
+    []
+  );
+
+  console.log(expiryItems);
+
   return (
     <Stack px="md" py="sm">
       <Flex justify="space-between">
