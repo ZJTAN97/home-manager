@@ -11,7 +11,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconLayoutDashboard, IconTimeDuration0 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Logo } from "../../../components/Logo/Logo";
+import { Logo } from "@/components/Logo/Logo";
 import { ColorSchemeButton } from "../ColorSchemeButton/ColorSchemeButton";
 import classes from "./LayoutShell.module.css";
 
