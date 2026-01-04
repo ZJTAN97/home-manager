@@ -1,13 +1,11 @@
 .header {
-  background-color: #f0f2f2;
-
-  @media screen and (display-mode: standalone) {
+  @media (display-mode: standalone) {
     margin-top: 60px;
   }
 }
 
 .main {
-  @media screen and (display-mode: standalone) {
+  @media (display-mode: standalone) {
     margin-top: 60px;
   }
 }

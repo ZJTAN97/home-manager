@@ -100,6 +100,9 @@ importers:
       '@types/react-dom':
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.7)
+      '@vite-pwa/assets-generator':
+        specifier: ^1.0.2
+        version: 1.0.2
       '@vitejs/plugin-react':
         specifier: 5.1.2
         version: 5.1.2(rolldown-vite@7.3.0(@types/node@25.0.3)(esbuild@0.27.2)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.6))(terser@5.44.1)(tsx@4.21.0))
@@ -3770,8 +3773,7 @@ snapshots:
   '@biomejs/cli-win32-x64@2.3.4':
     optional: true
 
-  '@canvas/image-data@1.1.0':
-    optional: true
+  '@canvas/image-data@1.1.0': {}
 
   '@electric-sql/pglite@0.3.14':
     optional: true
@@ -4044,7 +4046,6 @@ snapshots:
   '@quansync/fs@1.0.0':
     dependencies:
       quansync: 1.0.0
-    optional: true
 
   '@rolldown/binding-android-arm64@1.0.0-beta.53':
     optional: true
@@ -4397,7 +4398,6 @@ snapshots:
       sharp: 0.33.5
       sharp-ico: 0.1.5
       unconfig: 7.4.2
-    optional: true
 
   '@vitejs/plugin-react@5.1.2(rolldown-vite@7.3.0(@types/node@25.0.3)(esbuild@0.27.2)(jiti@2.6.1)(sugarss@5.0.1(postcss@8.5.6))(terser@5.44.1)(tsx@4.21.0))':
     dependencies:
@@ -4524,8 +4524,7 @@ snapshots:
 
   buffer-from@1.1.2: {}
 
-  cac@6.7.14:
-    optional: true
+  cac@6.7.14: {}
 
   call-bind-apply-helpers@1.0.2:
     dependencies:
@@ -4569,25 +4568,20 @@ snapshots:
   color-convert@2.0.1:
     dependencies:
       color-name: 1.1.4
-    optional: true
 
-  color-name@1.1.4:
-    optional: true
+  color-name@1.1.4: {}
 
   color-string@1.9.1:
     dependencies:
       color-name: 1.1.4
       simple-swizzle: 0.2.4
-    optional: true
 
   color@4.2.3:
     dependencies:
       color-convert: 2.0.1
       color-string: 1.9.1
-    optional: true
 
-  colorette@2.0.20:
-    optional: true
+  colorette@2.0.20: {}
 
   commander@2.20.3: {}
 
@@ -4595,8 +4589,7 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  consola@3.4.2:
-    optional: true
+  consola@3.4.2: {}
 
   convert-source-map@2.0.0: {}
 
@@ -4649,14 +4642,12 @@ snapshots:
     dependencies:
       '@canvas/image-data': 1.1.0
       to-data-view: 1.1.0
-    optional: true
 
   decode-ico@0.4.1:
     dependencies:
       '@canvas/image-data': 1.1.0
       decode-bmp: 0.2.1
       to-data-view: 1.1.0
-    optional: true
 
   deepmerge@4.3.1: {}
 
@@ -4672,8 +4663,7 @@ snapshots:
       has-property-descriptors: 1.0.2
       object-keys: 1.1.1
 
-  defu@6.1.4:
-    optional: true
+  defu@6.1.4: {}
 
   detect-libc@2.1.2: {}
 
@@ -4967,8 +4957,7 @@ snapshots:
 
   hono@4.11.3: {}
 
-  ico-endec@0.1.6:
-    optional: true
+  ico-endec@0.1.6: {}
 
   idb@7.1.1: {}
 
@@ -4998,8 +4987,7 @@ snapshots:
 
   is-arrayish@0.2.1: {}
 
-  is-arrayish@0.3.4:
-    optional: true
+  is-arrayish@0.3.4: {}
 
   is-async-function@2.1.1:
     dependencies:
@@ -5125,8 +5113,7 @@ snapshots:
       filelist: 1.0.4
       picocolors: 1.1.1
 
-  jiti@2.6.1:
-    optional: true
+  jiti@2.6.1: {}
 
   js-tokens@4.0.0: {}
 
@@ -5343,8 +5330,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  quansync@1.0.0:
-    optional: true
+  quansync@1.0.0: {}
 
   randombytes@2.1.0:
     dependencies:
@@ -5535,8 +5521,7 @@ snapshots:
 
   semver@6.3.1: {}
 
-  semver@7.7.3:
-    optional: true
+  semver@7.7.3: {}
 
   serialize-javascript@6.0.2:
     dependencies:
@@ -5581,7 +5566,6 @@ snapshots:
       decode-ico: 0.4.1
       ico-endec: 0.1.6
       sharp: 0.33.5
-    optional: true
 
   sharp@0.33.5:
     dependencies:
@@ -5608,7 +5592,6 @@ snapshots:
       '@img/sharp-wasm32': 0.33.5
       '@img/sharp-win32-ia32': 0.33.5
       '@img/sharp-win32-x64': 0.33.5
-    optional: true
 
   side-channel-list@1.0.0:
     dependencies:
@@ -5641,7 +5624,6 @@ snapshots:
   simple-swizzle@0.2.4:
     dependencies:
       is-arrayish: 0.3.4
-    optional: true
 
   smob@1.5.0: {}
 
@@ -5760,8 +5742,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
 
-  to-data-view@1.1.0:
-    optional: true
+  to-data-view@1.1.0: {}
 
   to-regex-range@5.0.1:
     dependencies:
@@ -5834,7 +5815,6 @@ snapshots:
     dependencies:
       '@quansync/fs': 1.0.0
       quansync: 1.0.0
-    optional: true
 
   unconfig@7.4.2:
     dependencies:
@@ -5843,7 +5823,6 @@ snapshots:
       jiti: 2.6.1
       quansync: 1.0.0
       unconfig-core: 7.4.2
-    optional: true
 
   undici-types@7.16.0: {}
 

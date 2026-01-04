@@ -29,13 +29,8 @@ export const LayoutShell = ({ children }: { children: ReactNode }) => {
       <AppShell.Header className={classes.header}>
         <Group h="100%" p="md" justify="space-between">
           <Flex gap="xs" align="center" px="sm">
-            <Burger
-              opened={opened}
-              onClick={toggle}
-              size="sm"
-              hiddenFrom="sm"
-            />
-            <Logo width={30} height={30} />
+            <Burger opened={opened} size="sm" hiddenFrom="sm" />
+            <Logo width={40} height={40} />
           </Flex>
           <ColorSchemeButton />
         </Group>
