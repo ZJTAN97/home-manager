@@ -11,6 +11,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconLayoutDashboard, IconTimeDuration0 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { Logo } from "../../../components/Logo/Logo";
 import { ColorSchemeButton } from "../ColorSchemeButton/ColorSchemeButton";
 import classes from "./LayoutShell.module.css";
 
@@ -27,21 +28,14 @@ export const LayoutShell = ({ children }: { children: ReactNode }) => {
     >
       <AppShell.Header className={classes.header}>
         <Group h="100%" p="md" justify="space-between">
-          <Flex gap="xs">
-            {" "}
+          <Flex gap="xs" align="center" px="sm">
             <Burger
               opened={opened}
               onClick={toggle}
               size="sm"
               hiddenFrom="sm"
             />
-            <Text
-              fw={500}
-              c="blue.8"
-              renderRoot={(props) => <Link to="/" {...props} />}
-            >
-              Home Manager
-            </Text>
+            <Logo width={30} height={30} />
           </Flex>
           <ColorSchemeButton />
         </Group>

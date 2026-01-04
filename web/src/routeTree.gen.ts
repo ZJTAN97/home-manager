@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as expiryExpiryRouteRouteImport } from './routes/(expiry)/expiry/route'
-import { Route as expiryExpiryNewRouteRouteImport } from './routes/(expiry)/expiry_.new/route'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,40 +22,31 @@ const expiryExpiryRouteRoute = expiryExpiryRouteRouteImport.update({
   path: '/expiry',
   getParentRoute: () => rootRouteImport,
 } as any)
-const expiryExpiryNewRouteRoute = expiryExpiryNewRouteRouteImport.update({
-  id: '/(expiry)/expiry_/new',
-  path: '/expiry/new',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/expiry': typeof expiryExpiryRouteRoute
-  '/expiry/new': typeof expiryExpiryNewRouteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/expiry': typeof expiryExpiryRouteRoute
-  '/expiry/new': typeof expiryExpiryNewRouteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(expiry)/expiry': typeof expiryExpiryRouteRoute
-  '/(expiry)/expiry_/new': typeof expiryExpiryNewRouteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/expiry' | '/expiry/new'
+  fullPaths: '/' | '/expiry'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/expiry' | '/expiry/new'
-  id: '__root__' | '/' | '/(expiry)/expiry' | '/(expiry)/expiry_/new'
+  to: '/' | '/expiry'
+  id: '__root__' | '/' | '/(expiry)/expiry'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   expiryExpiryRouteRoute: typeof expiryExpiryRouteRoute
-  expiryExpiryNewRouteRoute: typeof expiryExpiryNewRouteRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,20 +65,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof expiryExpiryRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(expiry)/expiry_/new': {
-      id: '/(expiry)/expiry_/new'
-      path: '/expiry/new'
-      fullPath: '/expiry/new'
-      preLoaderRoute: typeof expiryExpiryNewRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   expiryExpiryRouteRoute: expiryExpiryRouteRoute,
-  expiryExpiryNewRouteRoute: expiryExpiryNewRouteRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
