@@ -7,10 +7,32 @@ a {
 html,
 body {
   margin: 0;
-  overscroll-behavior: none; /* Prevents bounce/elastic scroll on iOS 15+ */
+  overscroll-behavior: none;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+/* Global Overrides for a smoother feel */
+:root {
+  --mantine-radius-md: 12px;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+body {
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9));
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overscroll-behavior-y: none; /* Prevent rubber-banding on body */
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
+  /* padding-top: var(--safe-area-top); Removed to let AppShell handle layout */ 
+  padding-bottom: var(--safe-area-bottom);
+}
+
+/* Ensure inputs don't zoom on focus on iOS */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
 }

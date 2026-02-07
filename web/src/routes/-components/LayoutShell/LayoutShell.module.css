@@ -1,24 +1,32 @@
-.header {
-  @media (display-mode: standalone) {
-    margin-top: 60px;
-  }
-}
-
-.main {
-  @media (display-mode: standalone) {
-    margin-top: 60px;
-  }
-}
-
 .navbar {
-  background-color: #f0f2f2;
-  height: 100dvh;
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-8));
   padding: var(--mantine-spacing-md);
   padding-bottom: 0;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid
-    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+
+/* Mobile bottom nav */
+.mobileNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(60px + var(--safe-area-bottom));
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-8));
+  border-top: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding-top: 8px;
+  padding-bottom: var(--safe-area-bottom);
+  z-index: 1000;
+}
+
+@media (min-width: 48em) {
+  .mobileNav {
+    display: none;
+  }
 }
 
 .links {
@@ -27,14 +35,31 @@
   margin-right: calc(var(--mantine-spacing-md) * -1);
 }
 
-.linksInner {
-  padding-top: var(--mantine-spacing-xl);
-  padding-bottom: var(--mantine-spacing-xl);
+.main {
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-9));
+  height: 100dvh;
+  padding-top: var(--safe-area-top); /* Ensure content clears status bar */
+  padding-bottom: calc(60px + var(--safe-area-bottom)); /* Add padding for bottom nav */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent body scroll */
 }
 
-.footer {
-  margin-left: calc(var(--mantine-spacing-md) * -1);
-  margin-right: calc(var(--mantine-spacing-md) * -1);
-  border-top: 1px solid
-    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+/* Scrollable content area */
+.root {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--mantine-spacing-md);
 }
+
+@media (min-width: 48em) {
+  .main {
+    padding-bottom: 0;
+  }
+  .root {
+    height: 100%;
+    padding: 0;
+  }
+}
+

@@ -9,9 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ChoresRouteRouteImport } from './routes/chores/route'
+import { Route as AppliancesRouteRouteImport } from './routes/appliances/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as expiryExpiryRouteRouteImport } from './routes/(expiry)/expiry/route'
 
+const ChoresRouteRoute = ChoresRouteRouteImport.update({
+  id: '/chores',
+  path: '/chores',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppliancesRouteRoute = AppliancesRouteRouteImport.update({
+  id: '/appliances',
+  path: '/appliances',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -25,32 +37,54 @@ const expiryExpiryRouteRoute = expiryExpiryRouteRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/appliances': typeof AppliancesRouteRoute
+  '/chores': typeof ChoresRouteRoute
   '/expiry': typeof expiryExpiryRouteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/appliances': typeof AppliancesRouteRoute
+  '/chores': typeof ChoresRouteRoute
   '/expiry': typeof expiryExpiryRouteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/appliances': typeof AppliancesRouteRoute
+  '/chores': typeof ChoresRouteRoute
   '/(expiry)/expiry': typeof expiryExpiryRouteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/expiry'
+  fullPaths: '/' | '/appliances' | '/chores' | '/expiry'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/expiry'
-  id: '__root__' | '/' | '/(expiry)/expiry'
+  to: '/' | '/appliances' | '/chores' | '/expiry'
+  id: '__root__' | '/' | '/appliances' | '/chores' | '/(expiry)/expiry'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppliancesRouteRoute: typeof AppliancesRouteRoute
+  ChoresRouteRoute: typeof ChoresRouteRoute
   expiryExpiryRouteRoute: typeof expiryExpiryRouteRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/chores': {
+      id: '/chores'
+      path: '/chores'
+      fullPath: '/chores'
+      preLoaderRoute: typeof ChoresRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/appliances': {
+      id: '/appliances'
+      path: '/appliances'
+      fullPath: '/appliances'
+      preLoaderRoute: typeof AppliancesRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -70,6 +104,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppliancesRouteRoute: AppliancesRouteRoute,
+  ChoresRouteRoute: ChoresRouteRoute,
   expiryExpiryRouteRoute: expiryExpiryRouteRoute,
 }
 export const routeTree = rootRouteImport
