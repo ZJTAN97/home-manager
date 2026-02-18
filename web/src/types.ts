@@ -1,14 +1,17 @@
 import { z } from 'zod';
 
-export const FoodItemSchema = z.object({
+export const ExpiryItemSchema = z.object({
   id: z.string(),
   name: z.string(),
   expiryDate: z.string(), // ISO string date
-  category: z.enum(['Pantry', 'Fridge', 'Freezer', 'Other']),
+  category: z.enum(['Pantry', 'Fridge', 'Freezer', 'Skin Care', 'Makeup', 'Other']),
   quantity: z.number().optional(),
   consumed: z.boolean().default(false),
+  image: z.string().optional(), // Base64 or URL
+  dateOpened: z.string().optional(), // ISO string date
+  shelfLifeMonths: z.number().optional(), // Months after opening
 });
-export type FoodItem = z.infer<typeof FoodItemSchema>;
+export type ExpiryItem = z.infer<typeof ExpiryItemSchema>;
 
 export const ChoreSchema = z.object({
   id: z.string(),

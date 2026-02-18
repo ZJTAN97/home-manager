@@ -1,9 +1,9 @@
 import { useLocalStorage } from '@mantine/hooks';
-import type { FoodItem, Chore, Appliance } from '../types';
+import type { ExpiryItem, Chore, Appliance } from '../types';
 
-export const useFoodItems = () => {
-    return useLocalStorage<FoodItem[]>({
-        key: 'food-items',
+export const useExpiryItems = () => {
+    return useLocalStorage<ExpiryItem[]>({
+        key: 'expiry-items',
         defaultValue: [],
         getInitialValueInEffect: true,
     });

@@ -1,0 +1,163 @@
+/* ExpiryPage.module.css */
+.container {
+  padding-bottom: 80px; /* Space for FAB */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-family: var(--mantine-font-family-headings);
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--mantine-color-text);
+}
+
+.searchContainer {
+  margin-bottom: 24px;
+}
+
+.searchInput {
+  background-color: light-dark(
+    var(--mantine-color-white),
+    var(--mantine-color-dark-6)
+  );
+  border: 1px solid
+    light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+  border-radius: 30px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: box-shadow 0.2s;
+}
+
+.searchInput:focus-within {
+  box-shadow: 0 0 0 2px var(--mantine-primary-color-filled);
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px; /* For scrollbar or spacing */
+  margin-bottom: 24px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Hide scrollbar for cleaner look */
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
+}
+
+.filterPill {
+  padding: 8px 24px;
+  border-radius: 20px;
+  background-color: light-dark(
+    var(--mantine-color-gray-1),
+    var(--mantine-color-dark-6)
+  );
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterPillActive {
+  background-color: #37eb34; /* Bright Green */
+  color: white; /* Green text on light bg? No, white on green */
+  box-shadow: 0 4px 12px rgba(55, 235, 52, 0.3);
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.itemCard {
+  background-color: light-dark(
+    var(--mantine-color-red-0),
+    var(--mantine-color-dark-7)
+  ); /* Light red tint for pantry theme? No, white */
+  background-color: light-dark(
+    #fffbfc,
+    var(--mantine-color-dark-7)
+  ); /* Slight warm tint */
+  border-radius: 24px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.itemCard:hover {
+  transform: scale(1.01);
+}
+
+.itemImage {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%; /* Circle images in design? Or rounded rect. Design image implies circle or rounded sq. Let's do rounded-full circle. */
+  object-fit: cover;
+  background-color: var(--mantine-color-gray-1);
+}
+
+.itemContent {
+  flex: 1;
+}
+
+.itemName {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: var(--mantine-color-text);
+}
+
+.itemSubtitle {
+  font-size: 13px;
+  color: var(--mantine-color-dimmed);
+}
+
+.statusBadge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.statusFresh {
+  background-color: #e0fcd4; /* Light Green */
+  color: #2b8a3e;
+}
+
+.statusExpiring {
+  background-color: #fff9db; /* Light Yellow */
+  color: #e67700;
+}
+
+.statusExpired {
+  background-color: #ffe3e3; /* Light Red */
+  color: #c92a2a;
+}
+
+.actionsButton {
+  background: transparent;
+  border: none;
+  color: var(--mantine-color-gray-4);
+  cursor: pointer;
+}
