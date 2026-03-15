@@ -1,15 +1,18 @@
+import babel from "@rolldown/plugin-babel";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import react from "@vitejs/plugin-react";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
-import viteTsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  resolve: {
+    tsconfigPaths: true,
+  },
+  optimizeDeps: {
+    exclude: ["@electric-sql/pglite"],
+  },
   plugins: [
-    viteTsConfigPaths({
-      projects: ["./tsconfig.json"],
-    }),
     svgr(),
     VitePWA({
       registerType: "autoUpdate",
@@ -26,10 +29,14 @@ export default defineConfig({
       },
     }),
     tanstackRouter({ target: "react", autoCodeSplitting: true }),
-    react({
-      babel: {
-        plugins: [["babel-plugin-react-compiler"]],
-      },
+    react(),
+    babel({
+      presets: [
+        reactCompilerPreset({
+          compilationMode: "annotation",
+          // biome-ignore lint/suspicious/noExplicitAny: <some bug with the library>
+        } as any),
+      ],
     }),
   ],
 });

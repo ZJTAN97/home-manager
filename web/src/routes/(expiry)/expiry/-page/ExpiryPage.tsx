@@ -30,8 +30,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { useExpiryItems } from "@/hooks/use-storage";
-import { ExpiryItem, ExpiryItemSchema } from "@/types";
+import { useExpiryItems } from "@/hooks/use-db";
+import { type ExpiryItem, ExpiryItemSchema } from "@/types";
 import { Route } from "../route";
 import classes from "./ExpiryPage.module.css";
 
@@ -53,7 +53,7 @@ const CreateExpiryItemSchema = ExpiryItemSchema.omit({
 type CreateExpiryItemForm = z.infer<typeof CreateExpiryItemSchema>;
 
 export const ExpiryPage = () => {
-  const [expiryItems, setExpiryItems] = useExpiryItems();
+  const { items: expiryItems, addItem, removeItem } = useExpiryItems();
   const [opened, { open, close: mantineClose }] = useDisclosure(false);
   const [activeTab, setActiveTab] = useState<string>("all");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -94,7 +94,10 @@ export const ExpiryPage = () => {
 
   const category = useWatch({ control, name: "category" });
   const dateOpened = useWatch({ control, name: "dateOpened" });
-  const shelfLifeMonths = useWatch({ control, name: "shelfLifeMonths" });
+  const shelfLifeMonths = useWatch({
+    control,
+    name: "shelfLifeMonths",
+  });
 
   useEffect(() => {
     if (dateOpened && shelfLifeMonths) {
@@ -118,7 +121,7 @@ export const ExpiryPage = () => {
         dateOpened: data.dateOpened?.toISOString(),
         shelfLifeMonths: data.shelfLifeMonths,
       };
-      setExpiryItems([...expiryItems, newItem]);
+      addItem(newItem);
       reset();
       setImageFile(null);
       close();
@@ -137,12 +140,12 @@ export const ExpiryPage = () => {
 
   const deleteItem = (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    setExpiryItems(expiryItems.filter((item) => item.id !== id));
+    removeItem(id);
   };
 
   const consumeItem = (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    deleteItem(id, e); // Consuming logic just deletes for now
+    removeItem(id);
   };
 
   const filteredItems = expiryItems
@@ -181,7 +184,11 @@ export const ExpiryPage = () => {
         color: "orange",
         className: classes.statusExpiring,
       };
-    return { label: "FRESH", color: "green", className: classes.statusFresh };
+    return {
+      label: "FRESH",
+      color: "green",
+      className: classes.statusFresh,
+    };
   };
 
   const categories = [
@@ -196,9 +203,19 @@ export const ExpiryPage = () => {
     <Container size="md" className={classes.container}>
       {/* Header */}
       <div className={classes.header}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
           <div
-            style={{ background: "#e0fcd4", borderRadius: "50%", padding: 8 }}
+            style={{
+              background: "#e0fcd4",
+              borderRadius: "50%",
+              padding: 8,
+            }}
           >
             <IconCheck size={20} color="#2b8a3e" />
           </div>

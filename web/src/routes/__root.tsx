@@ -1,10 +1,7 @@
-import type { QueryClient } from "@tanstack/react-query";
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { LayoutShell } from "./-components/LayoutShell/LayoutShell";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { LayoutShell } from "../components/LayoutShell/LayoutShell";
 
-export const Route = createRootRouteWithContext<{
-  queryClient: QueryClient;
-}>()({
+export const Route = createRootRoute({
   component: RootComponent,
   notFoundComponent: () => {
     return (
@@ -17,12 +14,8 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   return (
-    <>
-      <LayoutShell>
-        <Outlet />
-      </LayoutShell>
-      {/* <ReactQueryDevtools buttonPosition="bottom-right" />
-      <TanStackRouterDevtools position="bottom-right" /> */}
-    </>
+    <LayoutShell>
+      <Outlet />
+    </LayoutShell>
   );
 }

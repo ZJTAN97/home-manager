@@ -1,4 +1,12 @@
-import { ActionIcon, Container, Stack, Text, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Center,
+  Container,
+  Loader,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import {
   IconBell,
   IconChevronRight,
@@ -10,13 +18,15 @@ import {
 import { Link } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useMemo } from "react";
-import { useAppliances, useChores, useExpiryItems } from "@/hooks/use-storage";
-import classes from "./Dashboard.module.css";
+import { useAppliances, useChores, useExpiryItems } from "@/hooks/use-db";
+import classes from "./DashboardPage.module.css";
 
-export function Dashboard() {
-  const [expiryItems] = useExpiryItems();
-  const [chores] = useChores();
-  const [appliances] = useAppliances();
+export const DashboardPage = () => {
+  const { items: expiryItems, isLoading: expiryLoading } = useExpiryItems();
+  const { items: chores, isLoading: choresLoading } = useChores();
+  const { items: appliances, isLoading: appliancesLoading } = useAppliances();
+
+  const isLoading = expiryLoading || choresLoading || appliancesLoading;
 
   // Calculate stats
   const expiringSoonCount = expiryItems.filter((item) => {
@@ -39,7 +49,6 @@ export function Dashboard() {
   ).length;
 
   // Calculate Health
-  // Simple heuristic: start at 100, deduct points for issues
   const health = useMemo(() => {
     let score = 100;
     score -= expiredCount * 10;
@@ -50,6 +59,14 @@ export function Dashboard() {
   }, [expiredCount, expiringSoonCount, choresDueCount, appliancesDueCount]);
 
   const today = dayjs().format("dddd, MMMM D");
+
+  if (isLoading) {
+    return (
+      <Center h="50vh">
+        <Loader />
+      </Center>
+    );
+  }
 
   return (
     <Container size="md" className={classes.container}>
@@ -174,4 +191,4 @@ export function Dashboard() {
       </Stack>
     </Container>
   );
-}
+};

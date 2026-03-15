@@ -1,34 +1,43 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-    ActionIcon,
-    Button,
-    Card,
-    Container,
-    Group,
-    Modal,
-    NumberInput,
-    Stack,
-    Text,
-    TextInput,
-    Title,
-    Badge,
+  ActionIcon,
+  Badge,
+  Button,
+  Card,
+  Container,
+  Group,
+  Modal,
+  NumberInput,
+  Stack,
+  Text,
+  TextInput,
+  Title,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconPlus, IconTrash, IconTool } from "@tabler/icons-react";
+import { IconPlus, IconTool, IconTrash } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useAppliances } from "@/hooks/use-storage";
-import { Appliance, ApplianceSchema } from "@/types";
+import type { z } from "zod";
+import { useAppliances } from "@/hooks/use-db";
+import { type Appliance, ApplianceSchema } from "@/types";
 
 dayjs.extend(relativeTime);
 
-const CreateApplianceSchema = ApplianceSchema.omit({ id: true, lastMaintained: true, nextDue: true });
+const CreateApplianceSchema = ApplianceSchema.omit({
+  id: true,
+  lastMaintained: true,
+  nextDue: true,
+});
 type CreateApplianceForm = z.infer<typeof CreateApplianceSchema>;
 
 export const AppliancesPage = () => {
-  const [appliances, setAppliances] = useAppliances();
+  const {
+    items: appliances,
+    addItem,
+    updateItem,
+    removeItem,
+  } = useAppliances();
   const [opened, { open, close }] = useDisclosure(false);
 
   const {
@@ -42,7 +51,7 @@ export const AppliancesPage = () => {
     defaultValues: {
       name: "",
       maintenanceTask: "",
-      frequencyDays: 30, // Default to monthly
+      frequencyDays: 30,
     },
   });
 
@@ -52,32 +61,28 @@ export const AppliancesPage = () => {
       ...data,
       nextDue: dayjs().add(data.frequencyDays, "day").toISOString(),
     };
-    setAppliances([...appliances, newAppliance]);
+    addItem(newAppliance);
     reset();
     close();
   };
 
   const markMaintained = (id: string) => {
-    setAppliances(
-      appliances.map((app) => {
-        if (app.id === id) {
-          return {
-            ...app,
-            lastMaintained: dayjs().toISOString(),
-            nextDue: dayjs().add(app.frequencyDays, "day").toISOString(),
-          };
-        }
-        return app;
-      })
-    );
+    const app = appliances.find((a) => a.id === id);
+    if (!app) return;
+    updateItem({
+      ...app,
+      lastMaintained: dayjs().toISOString(),
+      nextDue: dayjs().add(app.frequencyDays, "day").toISOString(),
+    });
   };
 
   const deleteAppliance = (id: string) => {
-    setAppliances(appliances.filter((app) => app.id !== id));
+    removeItem(id);
   };
-  
-  const sortedAppliances = [...appliances].sort((a, b) => dayjs(a.nextDue).diff(dayjs(b.nextDue)));
 
+  const sortedAppliances = [...appliances].sort((a, b) =>
+    dayjs(a.nextDue).diff(dayjs(b.nextDue))
+  );
 
   return (
     <Container size="md" py="xl">
@@ -101,14 +106,18 @@ export const AppliancesPage = () => {
                 <Group justify="space-between">
                   <Stack gap={4}>
                     <Group gap="xs">
-                        <Text fw={600} size="lg">{app.name}</Text>
-                        {isDue && <Badge color="red">Maintenance Due</Badge>}
+                      <Text fw={600} size="lg">
+                        {app.name}
+                      </Text>
+                      {isDue && <Badge color="red">Maintenance Due</Badge>}
                     </Group>
                     <Text size="sm" c="dimmed">
-                      Task: {app.maintenanceTask} • Every {app.frequencyDays} days
+                      Task: {app.maintenanceTask} • Every {app.frequencyDays}{" "}
+                      days
                     </Text>
                     <Text size="xs" c="dimmed">
-                      Next due: {dayjs(app.nextDue).format("MMM D, YYYY")} ({dayjs(app.nextDue).fromNow()})
+                      Next due: {dayjs(app.nextDue).format("MMM D, YYYY")} (
+                      {dayjs(app.nextDue).fromNow()})
                     </Text>
                   </Stack>
                   <Group>

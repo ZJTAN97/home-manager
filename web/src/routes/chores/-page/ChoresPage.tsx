@@ -1,5 +1,7 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ActionIcon,
+  Badge,
   Button,
   Card,
   Container,
@@ -10,25 +12,27 @@ import {
   Text,
   TextInput,
   Title,
-  Badge
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconCheck, IconPlus, IconTrash } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useChores } from "@/hooks/use-storage";
-import { Chore, ChoreSchema } from "@/types";
+import type { z } from "zod";
+import { useChores } from "@/hooks/use-db";
+import { type Chore, ChoreSchema } from "@/types";
 
 dayjs.extend(relativeTime);
 
-const CreateChoreSchema = ChoreSchema.omit({ id: true, lastDone: true, nextDue: true });
+const CreateChoreSchema = ChoreSchema.omit({
+  id: true,
+  lastDone: true,
+  nextDue: true,
+});
 type CreateChoreForm = z.infer<typeof CreateChoreSchema>;
 
 export const ChoresPage = () => {
-  const [chores, setChores] = useChores();
+  const { items: chores, addItem, updateItem, removeItem } = useChores();
   const [opened, { open, close }] = useDisclosure(false);
 
   const {
@@ -51,31 +55,28 @@ export const ChoresPage = () => {
       ...data,
       nextDue: dayjs().add(data.frequencyDays, "day").toISOString(),
     };
-    setChores([...chores, newChore]);
+    addItem(newChore);
     reset();
     close();
   };
 
   const markComplete = (id: string) => {
-    setChores(
-      chores.map((chore) => {
-        if (chore.id === id) {
-          return {
-            ...chore,
-            lastDone: dayjs().toISOString(),
-            nextDue: dayjs().add(chore.frequencyDays, "day").toISOString(),
-          };
-        }
-        return chore;
-      })
-    );
+    const chore = chores.find((c) => c.id === id);
+    if (!chore) return;
+    updateItem({
+      ...chore,
+      lastDone: dayjs().toISOString(),
+      nextDue: dayjs().add(chore.frequencyDays, "day").toISOString(),
+    });
   };
 
   const deleteChore = (id: string) => {
-    setChores(chores.filter((chore) => chore.id !== id));
+    removeItem(id);
   };
 
-  const sortedChores = [...chores].sort((a, b) => dayjs(a.nextDue).diff(dayjs(b.nextDue)));
+  const sortedChores = [...chores].sort((a, b) =>
+    dayjs(a.nextDue).diff(dayjs(b.nextDue))
+  );
 
   return (
     <Container size="md" py="xl">
@@ -99,11 +100,12 @@ export const ChoresPage = () => {
                 <Group justify="space-between">
                   <Stack gap={4}>
                     <Group gap="sm">
-                        <Text fw={600}>{chore.name}</Text>
-                        {isDue && <Badge color="red">Due</Badge>}
+                      <Text fw={600}>{chore.name}</Text>
+                      {isDue && <Badge color="red">Due</Badge>}
                     </Group>
                     <Text size="sm" c="dimmed">
-                      Every {chore.frequencyDays} days • Next due {dayjs(chore.nextDue).fromNow()}
+                      Every {chore.frequencyDays} days • Next due{" "}
+                      {dayjs(chore.nextDue).fromNow()}
                     </Text>
                   </Stack>
                   <Group>
