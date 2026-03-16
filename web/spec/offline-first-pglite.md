@@ -46,14 +46,14 @@ src/db/
 └── migrate-localstorage.ts # One-time localStorage → PGlite migration
 
 src/hooks/
-└── use-db.ts              # useExpiryItems, useChores, useAppliances
+└── use-db.ts              # useInventory, useChores, useAppliances
 ```
 
 ## Migration from localStorage
 
 On first load, `PGliteProvider` runs `migrateLocalStorage()`:
 1. Checks `_meta` table for `localstorage_migrated` flag
-2. Reads `expiry-items`, `chores`, `appliances` from localStorage
+2. Reads `inventory`, `chores`, `appliances` from localStorage
 3. Validates with Zod schemas, inserts into PGlite
 4. Marks migration complete
 5. localStorage data is kept as backup
@@ -62,13 +62,13 @@ On first load, `PGliteProvider` runs `migrateLocalStorage()`:
 
 Before:
 ```ts
-const [items, setItems] = useExpiryItems(); // [data, setter] tuple
+const [items, setItems] = useInventory(); // [data, setter] tuple
 setItems([...items, newItem]);
 ```
 
 After:
 ```ts
-const { items, isLoading, addItem, updateItem, removeItem } = useExpiryItems();
+const { items, isLoading, addItem, updateItem, removeItem } = useInventory();
 addItem(newItem);
 ```
 

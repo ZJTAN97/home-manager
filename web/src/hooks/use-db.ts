@@ -2,31 +2,31 @@ import { useLiveQuery } from "@tanstack/react-db";
 import {
   appliancesCollection,
   choresCollection,
-  expiryItemsCollection,
+  inventoryCollection,
 } from "@/db/collections";
-import type { Appliance, Chore, ExpiryItem } from "@/types";
+import type { Appliance, Chore, InventoryItem } from "@/types";
 
-// ── Expiry Items ────────────────────────────────────────────
+// ── Inventory ───────────────────────────────────────────────
 
-export function useExpiryItems() {
+export function useInventory() {
   const { data, isLoading } = useLiveQuery((q) =>
-    q.from({ expiryItems: expiryItemsCollection })
+    q.from({ inventory: inventoryCollection })
   );
 
-  const items: ExpiryItem[] = (data ?? []) as ExpiryItem[];
+  const items: InventoryItem[] = (data ?? []) as InventoryItem[];
 
-  const addItem = (item: ExpiryItem) => {
-    expiryItemsCollection.insert(item);
+  const addItem = (item: InventoryItem) => {
+    inventoryCollection.insert(item);
   };
 
-  const updateItem = (item: ExpiryItem) => {
-    expiryItemsCollection.update(item.id, (draft) => {
+  const updateItem = (item: InventoryItem) => {
+    inventoryCollection.update(item.id, (draft) => {
       Object.assign(draft, item);
     });
   };
 
   const removeItem = (id: string) => {
-    expiryItemsCollection.delete(id);
+    inventoryCollection.delete(id);
   };
 
   return { items, isLoading, addItem, updateItem, removeItem };

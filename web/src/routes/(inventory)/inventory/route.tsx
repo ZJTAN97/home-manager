@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { ExpiryPage } from "./-page/ExpiryPage";
+import { InventoryPage } from "./-page/InventoryPage";
 
 const searchSchema = z.object({
   modal: z.string().optional(),
 });
 
-export const Route = createFileRoute("/(expiry)/expiry")({
+export const Route = createFileRoute("/(inventory)/inventory")({
   validateSearch: (search) => searchSchema.parse(search),
-  component: ExpiryPage,
+  component: InventoryPage,
 });

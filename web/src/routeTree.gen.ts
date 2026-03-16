@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ChoresRouteRouteImport } from './routes/chores/route'
 import { Route as AppliancesRouteRouteImport } from './routes/appliances/route'
 import { Route as homeIndexRouteImport } from './routes/(home)/index'
-import { Route as expiryExpiryRouteRouteImport } from './routes/(expiry)/expiry/route'
+import { Route as inventoryInventoryRouteRouteImport } from './routes/(inventory)/inventory/route'
 
 const ChoresRouteRoute = ChoresRouteRouteImport.update({
   id: '/chores',
@@ -29,43 +29,48 @@ const homeIndexRoute = homeIndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const expiryExpiryRouteRoute = expiryExpiryRouteRouteImport.update({
-  id: '/(expiry)/expiry',
-  path: '/expiry',
+const inventoryInventoryRouteRoute = inventoryInventoryRouteRouteImport.update({
+  id: '/(inventory)/inventory',
+  path: '/inventory',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/appliances': typeof AppliancesRouteRoute
   '/chores': typeof ChoresRouteRoute
-  '/expiry': typeof expiryExpiryRouteRoute
+  '/inventory': typeof inventoryInventoryRouteRoute
   '/': typeof homeIndexRoute
 }
 export interface FileRoutesByTo {
   '/appliances': typeof AppliancesRouteRoute
   '/chores': typeof ChoresRouteRoute
-  '/expiry': typeof expiryExpiryRouteRoute
+  '/inventory': typeof inventoryInventoryRouteRoute
   '/': typeof homeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/appliances': typeof AppliancesRouteRoute
   '/chores': typeof ChoresRouteRoute
-  '/(expiry)/expiry': typeof expiryExpiryRouteRoute
+  '/(inventory)/inventory': typeof inventoryInventoryRouteRoute
   '/(home)/': typeof homeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/appliances' | '/chores' | '/expiry' | '/'
+  fullPaths: '/appliances' | '/chores' | '/inventory' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/appliances' | '/chores' | '/expiry' | '/'
-  id: '__root__' | '/appliances' | '/chores' | '/(expiry)/expiry' | '/(home)/'
+  to: '/appliances' | '/chores' | '/inventory' | '/'
+  id:
+    | '__root__'
+    | '/appliances'
+    | '/chores'
+    | '/(inventory)/inventory'
+    | '/(home)/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppliancesRouteRoute: typeof AppliancesRouteRoute
   ChoresRouteRoute: typeof ChoresRouteRoute
-  expiryExpiryRouteRoute: typeof expiryExpiryRouteRoute
+  inventoryInventoryRouteRoute: typeof inventoryInventoryRouteRoute
   homeIndexRoute: typeof homeIndexRoute
 }
 
@@ -92,11 +97,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof homeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(expiry)/expiry': {
-      id: '/(expiry)/expiry'
-      path: '/expiry'
-      fullPath: '/expiry'
-      preLoaderRoute: typeof expiryExpiryRouteRouteImport
+    '/(inventory)/inventory': {
+      id: '/(inventory)/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof inventoryInventoryRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -105,7 +110,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   AppliancesRouteRoute: AppliancesRouteRoute,
   ChoresRouteRoute: ChoresRouteRoute,
-  expiryExpiryRouteRoute: expiryExpiryRouteRoute,
+  inventoryInventoryRouteRoute: inventoryInventoryRouteRoute,
   homeIndexRoute: homeIndexRoute,
 }
 export const routeTree = rootRouteImport

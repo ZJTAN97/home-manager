@@ -6,7 +6,7 @@ export const CREATE_TABLES_SQL = `
     value TEXT NOT NULL
   );
 
-  CREATE TABLE IF NOT EXISTS expiry_items (
+  CREATE TABLE IF NOT EXISTS inventory (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     expiry_date TEXT NOT NULL,

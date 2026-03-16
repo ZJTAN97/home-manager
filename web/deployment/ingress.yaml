@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: home-manager
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+    - hosts:
+        - home-manager.zhijie.wiki
+      secretName: home-manager-tls
+  ingressClassName: nginx
+  rules:
+    - host: home-manager.zhijie.wiki
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: home-manager-service
+                port:
+                  number: 80

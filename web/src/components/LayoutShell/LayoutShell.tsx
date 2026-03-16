@@ -117,7 +117,7 @@ export const LayoutShell = ({ children }: { children: ReactNode }) => {
             <div className={classes.fabWrapper}>
               <UnstyledButton
                 className={classes.fab}
-                onClick={() => router.navigate({ to: "/expiry" })}
+                onClick={() => router.navigate({ to: "/inventory" })}
               >
                 <IconPlus size={32} />
               </UnstyledButton>
@@ -126,7 +126,7 @@ export const LayoutShell = ({ children }: { children: ReactNode }) => {
             <div className={classes.mobileNavContent}>
               <div className={classes.navGroup}>
                 <MobileLink to="/" icon={IconHome} label="Home" />
-                <MobileLink to="/expiry" icon={IconBox} label="Inventory" />
+                <MobileLink to="/inventory" icon={IconBox} label="Inventory" />
               </div>
 
               {/* Spacer for FAB */}
@@ -165,7 +165,7 @@ const NavLinks = () => (
         />
       )}
     </Link>
-    <Link to="/expiry">
+    <Link to="/inventory">
       {({ isActive }: { isActive: boolean }) => (
         <NavLink
           leftSection={<IconFridge size={18} />}
@@ -173,7 +173,7 @@ const NavLinks = () => (
           active={isActive}
           label={
             <Text pt={1} fw={500} size="xs">
-              Expiry
+              Inventory
             </Text>
           }
         />

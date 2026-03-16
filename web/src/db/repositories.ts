@@ -1,9 +1,9 @@
 import type { PGlite } from "@electric-sql/pglite";
-import type { Appliance, Chore, ExpiryItem } from "@/types";
+import type { Appliance, Chore, InventoryItem } from "@/types";
 
 // ── Row ↔ TypeScript mappers ────────────────────────────────
 
-interface ExpiryItemRow {
+interface InventoryItemRow {
   id: string;
   name: string;
   expiry_date: string;
@@ -32,12 +32,12 @@ interface ApplianceRow {
   next_due: string;
 }
 
-function mapExpiryRow(row: ExpiryItemRow): ExpiryItem {
+function mapInventoryRow(row: InventoryItemRow): InventoryItem {
   return {
     id: row.id,
     name: row.name,
     expiryDate: row.expiry_date,
-    category: row.category as ExpiryItem["category"],
+    category: row.category as InventoryItem["category"],
     quantity: row.quantity ?? undefined,
     consumed: row.consumed,
     image: row.image ?? undefined,
@@ -67,19 +67,21 @@ function mapApplianceRow(row: ApplianceRow): Appliance {
   };
 }
 
-// ── Expiry Items ────────────────────────────────────────────
+// ── Inventory Items ─────────────────────────────────────────
 
-export async function getAllExpiryItems(db: PGlite): Promise<ExpiryItem[]> {
-  const res = await db.query<ExpiryItemRow>("SELECT * FROM expiry_items");
-  return res.rows.map(mapExpiryRow);
+export async function getAllInventoryItems(
+  db: PGlite
+): Promise<InventoryItem[]> {
+  const res = await db.query<InventoryItemRow>("SELECT * FROM inventory");
+  return res.rows.map(mapInventoryRow);
 }
 
-export async function insertExpiryItem(
+export async function insertInventoryItem(
   db: PGlite,
-  item: ExpiryItem
+  item: InventoryItem
 ): Promise<void> {
   await db.query(
-    `INSERT INTO expiry_items
+    `INSERT INTO inventory
        (id, name, expiry_date, category, quantity, consumed, image, date_opened, shelf_life_months)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
     [
@@ -96,12 +98,12 @@ export async function insertExpiryItem(
   );
 }
 
-export async function updateExpiryItem(
+export async function updateInventoryItem(
   db: PGlite,
-  item: ExpiryItem
+  item: InventoryItem
 ): Promise<void> {
   await db.query(
-    `UPDATE expiry_items SET
+    `UPDATE inventory SET
        name = $2, expiry_date = $3, category = $4, quantity = $5,
        consumed = $6, image = $7, date_opened = $8, shelf_life_months = $9
      WHERE id = $1`,
@@ -119,8 +121,11 @@ export async function updateExpiryItem(
   );
 }
 
-export async function deleteExpiryItem(db: PGlite, id: string): Promise<void> {
-  await db.query("DELETE FROM expiry_items WHERE id = $1", [id]);
+export async function deleteInventoryItem(
+  db: PGlite,
+  id: string
+): Promise<void> {
+  await db.query("DELETE FROM inventory WHERE id = $1", [id]);
 }
 
 // ── Chores ──────────────────────────────────────────────────

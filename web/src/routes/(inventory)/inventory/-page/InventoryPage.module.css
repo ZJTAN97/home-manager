@@ -98,6 +98,12 @@
   gap: 16px;
   position: relative;
   transition: transform 0.2s;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
 }
 
 .itemCard:hover {

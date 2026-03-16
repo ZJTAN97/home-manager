@@ -1,10 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ActionIcon,
   Avatar,
   Button,
   Container,
   FileInput,
   Group,
+  Image,
   Menu,
   Modal,
   NumberInput,
@@ -19,6 +21,8 @@ import { useDisclosure } from "@mantine/hooks";
 import {
   IconCheck,
   IconDotsVertical,
+  IconPencil,
+  IconPlus,
   IconSearch,
   IconTrash,
   IconUpload,
@@ -30,14 +34,14 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { useExpiryItems } from "@/hooks/use-db";
-import { type ExpiryItem, ExpiryItemSchema } from "@/types";
+import { useInventory } from "@/hooks/use-db";
+import { type InventoryItem, InventoryItemSchema } from "@/types";
 import { Route } from "../route";
-import classes from "./ExpiryPage.module.css";
+import classes from "./InventoryPage.module.css";
 
 dayjs.extend(relativeTime);
 
-const CreateExpiryItemSchema = ExpiryItemSchema.omit({
+const InventoryItemFormSchema = InventoryItemSchema.omit({
   id: true,
   consumed: true,
   expiryDate: true,
@@ -47,34 +51,26 @@ const CreateExpiryItemSchema = ExpiryItemSchema.omit({
 }).extend({
   expiryDate: z.date(),
   dateOpened: z.date().optional(),
-  shelfLifeMonths: z.number().optional(),
+  shelfLifeMonths: z.number().int().min(1).max(120).optional(),
 });
 
-type CreateExpiryItemForm = z.infer<typeof CreateExpiryItemSchema>;
+type InventoryItemFormData = z.infer<typeof InventoryItemFormSchema>;
 
-export const ExpiryPage = () => {
-  const { items: expiryItems, addItem, removeItem } = useExpiryItems();
+export const InventoryPage = () => {
+  const {
+    items: inventoryItems,
+    addItem,
+    updateItem,
+    removeItem,
+  } = useInventory();
   const [opened, { open, close: mantineClose }] = useDisclosure(false);
   const [activeTab, setActiveTab] = useState<string>("all");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
 
   const search = Route.useSearch();
   const navigate = useNavigate();
-
-  const close = () => {
-    mantineClose();
-    // Remove modal param if present
-    if (search.modal) {
-      navigate({ to: "/expiry", search: { modal: undefined } });
-    }
-  };
-
-  useEffect(() => {
-    if (search.modal === "add") {
-      open();
-    }
-  }, [search.modal]);
 
   const {
     register,
@@ -83,14 +79,55 @@ export const ExpiryPage = () => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<CreateExpiryItemForm>({
-    resolver: zodResolver(CreateExpiryItemSchema),
+  } = useForm<InventoryItemFormData>({
+    resolver: zodResolver(InventoryItemFormSchema),
     defaultValues: {
       name: "",
       category: "Fridge",
       expiryDate: new Date(),
     },
   });
+
+  const close = () => {
+    mantineClose();
+    setEditingItem(null);
+    if (search.modal) {
+      navigate({ to: "/inventory", search: { modal: undefined } });
+    }
+  };
+
+  const openAddModal = () => {
+    setEditingItem(null);
+    setImageFile(null);
+    reset({
+      name: "",
+      category: "Fridge",
+      expiryDate: new Date(),
+      dateOpened: undefined,
+      shelfLifeMonths: undefined,
+    });
+    open();
+  };
+
+  const openEditModal = (item: InventoryItem) => {
+    setEditingItem(item);
+    setImageFile(null);
+    reset({
+      name: item.name,
+      category: item.category,
+      expiryDate: new Date(item.expiryDate),
+      dateOpened: item.dateOpened ? new Date(item.dateOpened) : undefined,
+      shelfLifeMonths: item.shelfLifeMonths,
+      quantity: item.quantity,
+    });
+    open();
+  };
+
+  useEffect(() => {
+    if (search.modal === "add") {
+      openAddModal();
+    }
+  }, [search.modal]);
 
   const category = useWatch({ control, name: "category" });
   const dateOpened = useWatch({ control, name: "dateOpened" });
@@ -108,20 +145,34 @@ export const ExpiryPage = () => {
     }
   }, [dateOpened, shelfLifeMonths, setValue]);
 
-  const onSubmit = (data: CreateExpiryItemForm) => {
+  const onSubmit = (data: InventoryItemFormData) => {
     const processSubmit = (imageBase64?: string) => {
-      const newItem: ExpiryItem = {
-        id: crypto.randomUUID(),
-        name: data.name,
-        category: data.category,
-        quantity: data.quantity,
-        expiryDate: data.expiryDate.toISOString(),
-        consumed: false,
-        image: imageBase64,
-        dateOpened: data.dateOpened?.toISOString(),
-        shelfLifeMonths: data.shelfLifeMonths,
-      };
-      addItem(newItem);
+      if (editingItem) {
+        const updatedItem: InventoryItem = {
+          ...editingItem,
+          name: data.name,
+          category: data.category,
+          quantity: data.quantity,
+          expiryDate: data.expiryDate.toISOString(),
+          image: imageBase64 ?? editingItem.image,
+          dateOpened: data.dateOpened?.toISOString(),
+          shelfLifeMonths: data.shelfLifeMonths,
+        };
+        updateItem(updatedItem);
+      } else {
+        const newItem: InventoryItem = {
+          id: crypto.randomUUID(),
+          name: data.name,
+          category: data.category,
+          quantity: data.quantity,
+          expiryDate: data.expiryDate.toISOString(),
+          consumed: false,
+          image: imageBase64,
+          dateOpened: data.dateOpened?.toISOString(),
+          shelfLifeMonths: data.shelfLifeMonths,
+        };
+        addItem(newItem);
+      }
       reset();
       setImageFile(null);
       close();
@@ -143,13 +194,15 @@ export const ExpiryPage = () => {
     removeItem(id);
   };
 
-  const consumeItem = (id: string, e?: React.MouseEvent) => {
+  const consumeItem = (item: InventoryItem, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    removeItem(id);
+    updateItem({ ...item, consumed: true });
   };
 
-  const filteredItems = expiryItems
+  const filteredItems = inventoryItems
     .filter((item) => {
+      if (item.consumed) return false;
+
       const queryMatch = item.name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
@@ -219,11 +272,23 @@ export const ExpiryPage = () => {
           >
             <IconCheck size={20} color="#2b8a3e" />
           </div>
-          <Text className={classes.title}>Pantry</Text>
+          <Text className={classes.title}>Inventory</Text>
         </div>
-        <Avatar radius="xl" color="gray">
-          <IconUser size={20} />
-        </Avatar>
+        <Group gap="sm">
+          <ActionIcon
+            variant="filled"
+            color="green"
+            size="lg"
+            radius="xl"
+            onClick={openAddModal}
+            aria-label="Add item"
+          >
+            <IconPlus size={20} />
+          </ActionIcon>
+          <Avatar radius="xl" color="gray">
+            <IconUser size={20} />
+          </Avatar>
+        </Group>
       </div>
 
       {/* Search */}
@@ -273,7 +338,12 @@ export const ExpiryPage = () => {
               item.category === "Skin Care" || item.category === "Makeup";
 
             return (
-              <div key={item.id} className={classes.itemCard}>
+              <button
+                type="button"
+                key={item.id}
+                className={classes.itemCard}
+                onClick={() => openEditModal(item)}
+              >
                 <img
                   src={item.image || "https://placehold.co/60x60?text=Item"}
                   alt={item.name}
@@ -323,8 +393,17 @@ export const ExpiryPage = () => {
                   </Menu.Target>
                   <Menu.Dropdown>
                     <Menu.Item
+                      leftSection={<IconPencil size={14} />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openEditModal(item);
+                      }}
+                    >
+                      Edit
+                    </Menu.Item>
+                    <Menu.Item
                       leftSection={<IconCheck size={14} />}
-                      onClick={(e) => consumeItem(item.id, e)}
+                      onClick={(e) => consumeItem(item, e)}
                       color="green"
                     >
                       Consume
@@ -338,7 +417,7 @@ export const ExpiryPage = () => {
                     </Menu.Item>
                   </Menu.Dropdown>
                 </Menu>
-              </div>
+              </button>
             );
           })
         )}
@@ -347,12 +426,22 @@ export const ExpiryPage = () => {
       <Modal
         opened={opened}
         onClose={close}
-        title="Add Expiry Item"
+        title={editingItem ? "Edit Item" : "Add Item"}
         centered
         radius="lg"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack>
+            {editingItem?.image && !imageFile && (
+              <Image
+                src={editingItem.image}
+                alt={editingItem.name}
+                radius="md"
+                h={120}
+                fit="contain"
+              />
+            )}
+
             <TextInput
               label="Item Name"
               placeholder="e.g. Milk, Face Cream"
@@ -403,7 +492,8 @@ export const ExpiryPage = () => {
                     <NumberInput
                       label="Period After Opening (Months)"
                       placeholder="e.g. 12"
-                      min={0}
+                      min={1}
+                      max={120}
                       {...field}
                       error={errors.shelfLifeMonths?.message}
                     />
@@ -445,7 +535,7 @@ export const ExpiryPage = () => {
                 Cancel
               </Button>
               <Button type="submit" color="green">
-                Add Item
+                {editingItem ? "Save Changes" : "Add Item"}
               </Button>
             </Group>
           </Stack>

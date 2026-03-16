@@ -1,31 +1,31 @@
 import { createCollection } from "@tanstack/db";
-import type { Appliance, Chore, ExpiryItem } from "@/types";
+import type { Appliance, Chore, InventoryItem } from "@/types";
 import { getDb } from "./pglite";
 import {
   deleteAppliance,
   deleteChore,
-  deleteExpiryItem,
+  deleteInventoryItem,
   getAllAppliances,
   getAllChores,
-  getAllExpiryItems,
+  getAllInventoryItems,
   insertAppliance,
   insertChore,
-  insertExpiryItem,
+  insertInventoryItem,
   updateAppliance,
   updateChore,
-  updateExpiryItem,
+  updateInventoryItem,
 } from "./repositories";
 
-// ── Expiry Items Collection ─────────────────────────────────
+// ── Inventory Collection ────────────────────────────────────
 
-export const expiryItemsCollection = createCollection<ExpiryItem, string>({
-  id: "expiry-items",
+export const inventoryCollection = createCollection<InventoryItem, string>({
+  id: "inventory",
   getKey: (item) => item.id,
   sync: {
     sync: ({ begin, write, commit, markReady }) => {
       (async () => {
         const db = await getDb();
-        const items = await getAllExpiryItems(db);
+        const items = await getAllInventoryItems(db);
         begin();
         for (const item of items) {
           write({
@@ -41,19 +41,19 @@ export const expiryItemsCollection = createCollection<ExpiryItem, string>({
   onInsert: async ({ transaction }) => {
     const db = await getDb();
     for (const m of transaction.mutations) {
-      await insertExpiryItem(db, m.modified);
+      await insertInventoryItem(db, m.modified);
     }
   },
   onUpdate: async ({ transaction }) => {
     const db = await getDb();
     for (const m of transaction.mutations) {
-      await updateExpiryItem(db, m.modified);
+      await updateInventoryItem(db, m.modified);
     }
   },
   onDelete: async ({ transaction }) => {
     const db = await getDb();
     for (const m of transaction.mutations) {
-      await deleteExpiryItem(db, m.key);
+      await deleteInventoryItem(db, m.key);
     }
   },
 });

@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Center,
   Container,
+  Flex,
   Loader,
   Stack,
   Text,
@@ -12,29 +13,29 @@ import {
   IconChevronRight,
   IconFridge,
   IconSparkles,
-  IconSun,
   IconTool,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useMemo } from "react";
-import { useAppliances, useChores, useExpiryItems } from "@/hooks/use-db";
+import { Logo } from "@/components/Logo/Logo";
+import { useAppliances, useChores, useInventory } from "@/hooks/use-db";
 import classes from "./DashboardPage.module.css";
 
 export const DashboardPage = () => {
-  const { items: expiryItems, isLoading: expiryLoading } = useExpiryItems();
+  const { items: inventoryItems, isLoading: inventoryLoading } = useInventory();
   const { items: chores, isLoading: choresLoading } = useChores();
   const { items: appliances, isLoading: appliancesLoading } = useAppliances();
 
-  const isLoading = expiryLoading || choresLoading || appliancesLoading;
+  const isLoading = inventoryLoading || choresLoading || appliancesLoading;
 
   // Calculate stats
-  const expiringSoonCount = expiryItems.filter((item) => {
+  const expiringSoonCount = inventoryItems.filter((item) => {
     const diff = dayjs(item.expiryDate).diff(dayjs(), "day");
     return diff <= 3 && diff >= 0;
   }).length;
 
-  const expiredCount = expiryItems.filter((item) =>
+  const expiredCount = inventoryItems.filter((item) =>
     dayjs(item.expiryDate).isBefore(dayjs(), "day")
   ).length;
   const choresDueCount = chores.filter(
@@ -84,13 +85,11 @@ export const DashboardPage = () => {
                 justifyContent: "center",
               }}
             >
-              <IconSun size={24} color="#5ba82e" />
+              <Logo width={32} height={32} />
             </div>
             <div>
               <Title order={2} className={classes.greeting}>
-                Good morning,
-                <br />
-                Homeowner
+                Welcome back
               </Title>
               <Text className={classes.date}>{today}</Text>
             </div>
@@ -103,16 +102,10 @@ export const DashboardPage = () => {
 
       {/* Home Health Card */}
       <div className={classes.healthCard}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-          }}
-        >
+        <Flex justify="space-between" align="center">
           <Text className={classes.healthTitle}>HOME HEALTH</Text>
           <Text className={classes.healthValue}>{health}%</Text>
-        </div>
+        </Flex>
 
         <div className={classes.progressBarContainer}>
           <div
@@ -132,7 +125,7 @@ export const DashboardPage = () => {
         <Text className={classes.sectionTitle}>Quick Actions</Text>
 
         <div className={classes.actionList}>
-          <Link to="/expiry" className={classes.actionCard}>
+          <Link to="/inventory" className={classes.actionCard}>
             <div
               className={classes.iconWrapper}
               style={{ backgroundColor: "#fff4e6" }}
@@ -140,7 +133,7 @@ export const DashboardPage = () => {
               <IconFridge size={24} color="#fd7e14" />
             </div>
             <div className={classes.actionContent}>
-              <Text className={classes.actionLabel}>Pantry Expirations</Text>
+              <Text className={classes.actionLabel}>Inventory</Text>
               <Text className={classes.actionSubtext}>
                 {expiringSoonCount > 0
                   ? `${expiringSoonCount} items expiring soon`
