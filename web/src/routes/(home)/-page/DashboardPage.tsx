@@ -1,9 +1,7 @@
 import {
   ActionIcon,
-  Center,
   Container,
   Flex,
-  Loader,
   Stack,
   Text,
   Title,
@@ -15,19 +13,22 @@ import {
   IconSparkles,
   IconTool,
 } from "@tabler/icons-react";
+import { useLiveQuery } from "@tanstack/react-db";
 import { Link } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { Logo } from "@/components/Logo/Logo";
-import { useAppliances, useChores, useInventory } from "@/hooks/use-db";
+import {
+  appliancesCollection,
+  choresCollection,
+  inventoryCollection,
+} from "@/db/collections";
 import classes from "./DashboardPage.module.css";
 
 export const DashboardPage = () => {
-  const { items: inventoryItems, isLoading: inventoryLoading } = useInventory();
-  const { items: chores, isLoading: choresLoading } = useChores();
-  const { items: appliances, isLoading: appliancesLoading } = useAppliances();
-
-  const isLoading = inventoryLoading || choresLoading || appliancesLoading;
+  const { data: inventoryItems } = useLiveQuery(inventoryCollection);
+  const { data: chores } = useLiveQuery(choresCollection);
+  const { data: appliances } = useLiveQuery(appliancesCollection);
 
   // Calculate stats
   const expiringSoonCount = inventoryItems.filter((item) => {
@@ -60,14 +61,6 @@ export const DashboardPage = () => {
   }, [expiredCount, expiringSoonCount, choresDueCount, appliancesDueCount]);
 
   const today = dayjs().format("dddd, MMMM D");
-
-  if (isLoading) {
-    return (
-      <Center h="50vh">
-        <Loader />
-      </Center>
-    );
-  }
 
   return (
     <Container size="md" className={classes.container}>

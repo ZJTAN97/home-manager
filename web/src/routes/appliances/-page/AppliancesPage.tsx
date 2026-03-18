@@ -1,96 +1,50 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ActionIcon,
   Badge,
-  Button,
   Card,
   Container,
   Group,
-  Modal,
-  NumberInput,
   Stack,
   Text,
-  TextInput,
   Title,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconPlus, IconTool, IconTrash } from "@tabler/icons-react";
+import { IconTool, IconTrash } from "@tabler/icons-react";
+import { useLiveQuery } from "@tanstack/react-db";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useForm } from "react-hook-form";
-import type { z } from "zod";
-import { useAppliances } from "@/hooks/use-db";
-import { type Appliance, ApplianceSchema } from "@/types";
+import { appliancesCollection } from "@/db/collections";
+import { AddApplianceModal } from "../-components/AddApplianceModal";
 
 dayjs.extend(relativeTime);
 
-const CreateApplianceSchema = ApplianceSchema.omit({
-  id: true,
-  lastMaintained: true,
-  nextDue: true,
-});
-type CreateApplianceForm = z.infer<typeof CreateApplianceSchema>;
-
 export const AppliancesPage = () => {
-  const {
-    items: appliances,
-    addItem,
-    updateItem,
-    removeItem,
-  } = useAppliances();
-  const [opened, { open, close }] = useDisclosure(false);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-    setValue,
-  } = useForm<CreateApplianceForm>({
-    resolver: zodResolver(CreateApplianceSchema),
-    defaultValues: {
-      name: "",
-      maintenanceTask: "",
-      frequencyDays: 30,
-    },
-  });
-
-  const onSubmit = (data: CreateApplianceForm) => {
-    const newAppliance: Appliance = {
-      id: crypto.randomUUID(),
-      ...data,
-      nextDue: dayjs().add(data.frequencyDays, "day").toISOString(),
-    };
-    addItem(newAppliance);
-    reset();
-    close();
-  };
+  const { data: appliances } = useLiveQuery(appliancesCollection);
 
   const markMaintained = (id: string) => {
     const app = appliances.find((a) => a.id === id);
     if (!app) return;
-    updateItem({
-      ...app,
-      lastMaintained: dayjs().toISOString(),
-      nextDue: dayjs().add(app.frequencyDays, "day").toISOString(),
+    appliancesCollection.update(app.id, (draft) => {
+      Object.assign(draft, {
+        ...app,
+        lastMaintained: dayjs().toISOString(),
+        nextDue: dayjs().add(app.frequencyDays, "day").toISOString(),
+      });
     });
   };
 
   const deleteAppliance = (id: string) => {
-    removeItem(id);
+    appliancesCollection.delete(id);
   };
 
   const sortedAppliances = [...appliances].sort((a, b) =>
-    dayjs(a.nextDue).diff(dayjs(b.nextDue))
+    dayjs(a.nextDue).diff(dayjs(b.nextDue)),
   );
 
   return (
     <Container size="md" py="xl">
       <Group justify="space-between" mb="lg">
         <Title order={2}>Appliance Maintenance</Title>
-        <Button leftSection={<IconPlus size={16} />} onClick={open}>
-          Add Appliance
-        </Button>
+        <AddApplianceModal />
       </Group>
 
       <Stack gap="md">
@@ -145,38 +99,6 @@ export const AppliancesPage = () => {
           })
         )}
       </Stack>
-
-      <Modal opened={opened} onClose={close} title="Add New Appliance">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack>
-            <TextInput
-              label="Appliance Name"
-              placeholder="e.g. Dishwasher"
-              {...register("name")}
-              error={errors.name?.message}
-            />
-            <TextInput
-              label="Maintenance Task"
-              placeholder="e.g. Clean filter"
-              {...register("maintenanceTask")}
-              error={errors.maintenanceTask?.message}
-            />
-            <NumberInput
-              label="Frequency (Days)"
-              defaultValue={30}
-              min={1}
-              onChange={(val) => setValue("frequencyDays", Number(val))}
-              error={errors.frequencyDays?.message}
-            />
-            <Group justify="flex-end" mt="md">
-              <Button variant="default" onClick={close}>
-                Cancel
-              </Button>
-              <Button type="submit">Track Appliance</Button>
-            </Group>
-          </Stack>
-        </form>
-      </Modal>
     </Container>
   );
 };

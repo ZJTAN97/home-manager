@@ -1,90 +1,50 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ActionIcon,
   Badge,
-  Button,
   Card,
   Container,
   Group,
-  Modal,
-  NumberInput,
   Stack,
   Text,
-  TextInput,
   Title,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconCheck, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconCheck, IconTrash } from "@tabler/icons-react";
+import { useLiveQuery } from "@tanstack/react-db";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useForm } from "react-hook-form";
-import type { z } from "zod";
-import { useChores } from "@/hooks/use-db";
-import { type Chore, ChoreSchema } from "@/types";
+import { choresCollection } from "@/db/collections";
+import { AddChoreModal } from "../-components/AddChoreModal";
 
 dayjs.extend(relativeTime);
 
-const CreateChoreSchema = ChoreSchema.omit({
-  id: true,
-  lastDone: true,
-  nextDue: true,
-});
-type CreateChoreForm = z.infer<typeof CreateChoreSchema>;
-
 export const ChoresPage = () => {
-  const { items: chores, addItem, updateItem, removeItem } = useChores();
-  const [opened, { open, close }] = useDisclosure(false);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-    setValue,
-  } = useForm<CreateChoreForm>({
-    resolver: zodResolver(CreateChoreSchema),
-    defaultValues: {
-      name: "",
-      frequencyDays: 7,
-    },
-  });
-
-  const onSubmit = (data: CreateChoreForm) => {
-    const newChore: Chore = {
-      id: crypto.randomUUID(),
-      ...data,
-      nextDue: dayjs().add(data.frequencyDays, "day").toISOString(),
-    };
-    addItem(newChore);
-    reset();
-    close();
-  };
+  const { data: chores } = useLiveQuery(choresCollection);
 
   const markComplete = (id: string) => {
     const chore = chores.find((c) => c.id === id);
     if (!chore) return;
-    updateItem({
-      ...chore,
-      lastDone: dayjs().toISOString(),
-      nextDue: dayjs().add(chore.frequencyDays, "day").toISOString(),
+    choresCollection.update(chore.id, (draft) => {
+      Object.assign(draft, {
+        ...chore,
+        lastDone: dayjs().toISOString(),
+        nextDue: dayjs().add(chore.frequencyDays, "day").toISOString(),
+      });
     });
   };
 
   const deleteChore = (id: string) => {
-    removeItem(id);
+    choresCollection.delete(id);
   };
 
   const sortedChores = [...chores].sort((a, b) =>
-    dayjs(a.nextDue).diff(dayjs(b.nextDue))
+    dayjs(a.nextDue).diff(dayjs(b.nextDue)),
   );
 
   return (
     <Container size="md" py="xl">
       <Group justify="space-between" mb="lg">
         <Title order={2}>Housekeeping Chores</Title>
-        <Button leftSection={<IconPlus size={16} />} onClick={open}>
-          Add Chore
-        </Button>
+        <AddChoreModal />
       </Group>
 
       <Stack gap="md">
@@ -133,32 +93,6 @@ export const ChoresPage = () => {
           })
         )}
       </Stack>
-
-      <Modal opened={opened} onClose={close} title="Add New Chore">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack>
-            <TextInput
-              label="Chore Name"
-              placeholder="e.g. Vacuum living room"
-              {...register("name")}
-              error={errors.name?.message}
-            />
-            <NumberInput
-              label="Frequency (Days)"
-              defaultValue={7}
-              min={1}
-              onChange={(val) => setValue("frequencyDays", Number(val))}
-              error={errors.frequencyDays?.message}
-            />
-            <Group justify="flex-end" mt="md">
-              <Button variant="default" onClick={close}>
-                Cancel
-              </Button>
-              <Button type="submit">Create Chore</Button>
-            </Group>
-          </Stack>
-        </form>
-      </Modal>
     </Container>
   );
 };

@@ -20,8 +20,8 @@ import {
   IconMoonStars,
   IconPlus,
   IconRotateClockwise2,
-  IconSettings,
   IconSun,
+  IconSunElectricity,
   IconWashMachine,
 } from "@tabler/icons-react";
 import { Link, useRouter } from "@tanstack/react-router";
@@ -98,7 +98,9 @@ export const LayoutShell = ({ children }: { children: ReactNode }) => {
       <AppShell.Navbar className={classes.navbar} visibleFrom="sm">
         <Flex gap="xs" align="center" my="md">
           <Logo width={40} height={40} />
-          <Text fw={700}>HomeMgr</Text>
+          <Text fw={700} size="sm">
+            Home Manager
+          </Text>
         </Flex>
 
         <div className={classes.links}>
@@ -133,11 +135,11 @@ export const LayoutShell = ({ children }: { children: ReactNode }) => {
               <div style={{ width: 64 }} />
 
               <div className={classes.navGroup}>
-                <MobileLink to="/chores" icon={IconChecklist} label="Tasks" />
+                <MobileLink to="/chores" icon={IconChecklist} label="Chores" />
                 <MobileLink
                   to="/appliances"
-                  icon={IconSettings}
-                  label="Settings"
+                  icon={IconSunElectricity}
+                  label="Appliances"
                 />
               </div>
             </div>

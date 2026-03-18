@@ -16,13 +16,7 @@ export default defineConfig({
     svgr(),
     VitePWA({
       registerType: "autoUpdate",
-      manifest: {
-        name: "home-manager",
-        short_name: "home-manager",
-        theme_color: "#ffffff",
-        start_url: "/",
-        display: "standalone",
-      },
+      manifest: false,
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,wasm,data,webmanifest}"],
         maximumFileSizeToCacheInBytes: 15_000_000,
